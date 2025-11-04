@@ -1,0 +1,96 @@
+[gd_scene load_steps=6 format=3 uid="uid://75gexhb57qwu"]
+
+[ext_resource type="Texture2D" uid="uid://jn2wqcttwd6r" path="res://Assets/Title Screen/titlesc.png" id="1_anq2l"]
+[ext_resource type="FontFile" uid="uid://bjku6c4k67vsx" path="res://Assets/Fonts/MySims Racing DS Large Font.ttf" id="2_1j3pg"]
+[ext_resource type="FontFile" uid="uid://dj4358r6nxebx" path="res://Assets/Fonts/ChunkyDunk.ttf" id="3_4kc87"]
+[ext_resource type="AudioStream" uid="uid://sdq2x7ymjqyu" path="res://Assets/Audio/title.mp3" id="4_k5jbm"]
+
+[sub_resource type="GDScript" id="GDScript_4kc87"]
+script/source = "extends Control
+
+@onready var audio_player = $\"../AudioStreamPlayer2D\"
+
+func _on_start_pressed() -> void:
+	audio_player.stream = load(\"res://Assets/Audio/coolsay.mp3\")
+	if not audio_player.is_connected(\"finished\", Callable(self, \"_on_audio_finished\")):
+		audio_player.connect(\"finished\", Callable(self, \"_on_audio_finished\"))
+	audio_player.play()
+
+func _on_audio_finished() -> void:
+	get_tree().change_scene_to_file(\"res://Scenes/Levels/main.tscn\")
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
+"
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchor_left = -0.05
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 57.600002
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = -85.0
+offset_top = -16.0
+offset_right = 1163.0
+offset_bottom = 650.0
+texture = ExtResource("1_anq2l")
+expand_mode = 1
+
+[node name="Collection" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 64.0
+offset_top = 246.0
+offset_right = 555.0
+offset_bottom = 435.0
+script = SubResource("GDScript_4kc87")
+
+[node name="Title Text" type="Label" parent="Collection"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 1.0
+offset_top = 10.0
+offset_right = 485.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(1, 0.7607843, 0.05490196, 1)
+theme_override_fonts/font = ExtResource("2_1j3pg")
+theme_override_font_sizes/font_size = 65
+text = "COOL FIGHTER"
+
+[node name="Start" type="Button" parent="Collection"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 163.0
+offset_top = 92.0
+offset_right = 300.0
+offset_bottom = 140.00003
+theme_override_fonts/font = ExtResource("3_4kc87")
+theme_override_font_sizes/font_size = 40
+text = "Start"
+flat = true
+
+[node name="Quit" type="Button" parent="Collection"]
+texture_filter = 1
+layout_mode = 0
+offset_left = 162.0
+offset_top = 150.0
+offset_right = 299.0
+offset_bottom = 198.0
+theme_override_fonts/font = ExtResource("3_4kc87")
+theme_override_font_sizes/font_size = 40
+text = "Quit"
+flat = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_k5jbm")
+autoplay = true
+
+[connection signal="button_down" from="Collection/Start" to="." method="_on_start_button_down"]
+[connection signal="button_down" from="Collection/Start" to="Collection/Start" method="_on_start_down"]
+[connection signal="pressed" from="Collection/Start" to="Collection" method="_on_start_pressed"]
+[connection signal="pressed" from="Collection/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="Collection/Quit" to="Collection" method="_on_quit_pressed"]

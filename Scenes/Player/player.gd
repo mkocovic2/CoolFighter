@@ -3,22 +3,25 @@ extends CharacterBody2D
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var combo_timer = $ComboTimer
 @onready var attack_spawn_point = $AttackSpawnPoint
-
 @export var speed: float = 200.0
 @export var combo_window: float = 1.0
 @export var attack_scene: PackedScene
 @export var attack_speed: float = 300.0
 @export var attack_distance: float = 100.0
-
 var current_animation: String = ""
 var combo_count = 0
 var is_attacking = false
 var attack_queued = false
+var spawn_point_offset: float = 0.0
 
 func _ready():
 	combo_timer.wait_time = combo_window
 	combo_timer.one_shot = true
 	combo_timer.timeout.connect(_on_combo_timeout)
+	
+	# Store the initial spawn point offset
+	if attack_spawn_point:
+		spawn_point_offset = attack_spawn_point.position.x
 
 func _physics_process(delta):
 	if Input.is_action_just_pressed("ui_accept"):
@@ -112,11 +115,11 @@ func update_appearance():
 	var desired_animation: String = ""
 	
 	if velocity.y < -10.0:
-		desired_animation = "idle"
+		desired_animation = "walk"
 	elif velocity.y > 10.0:
-		desired_animation = "idle"
+		desired_animation = "walk"
 	elif is_moving:
-		desired_animation = "idle"
+		desired_animation = "walk"
 	else:
 		desired_animation = "idle"
 	
@@ -125,7 +128,12 @@ func update_appearance():
 		animated_sprite.animation = desired_animation
 		animated_sprite.play()
 	
+	# Flip sprite and attack spawn point based on movement direction
 	if velocity.x < 0:
 		animated_sprite.flip_h = false
+		if attack_spawn_point:
+			attack_spawn_point.position.x = -abs(spawn_point_offset)
 	elif velocity.x > 0:
 		animated_sprite.flip_h = true
+		if attack_spawn_point:
+			attack_spawn_point.position.x = abs(spawn_point_offset)

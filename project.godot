@@ -11,6 +11,10 @@ config_version=5
 [application]
 
 config/name="CoolFighter"
-run/main_scene="uid://ctqwu4ed5b7ug"
+run/main_scene="uid://75gexhb57qwu"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)

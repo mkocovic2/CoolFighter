@@ -1,0 +1,102 @@
+[gd_scene load_steps=11 format=3 uid="uid://bcvg5f6n0elr7"]
+
+[ext_resource type="Script" uid="uid://cmie0epx36vrc" path="res://Scenes/Enemies/cubeman.gd" id="1_544ap"]
+[ext_resource type="Texture2D" uid="uid://bcelltg2yhrnh" path="res://Assets/Enemy/Cube Man/ewalkidle.png" id="2_e6cbj"]
+[ext_resource type="Texture2D" uid="uid://diatbf18di868" path="res://Assets/Enemy/Cube Man/flying.png" id="2_taaqf"]
+[ext_resource type="Texture2D" uid="uid://c3rsihb8npn28" path="res://Assets/Enemy/Cube Man/hit.png" id="3_qgkom"]
+[ext_resource type="Texture2D" uid="uid://bohusck5o8gew" path="res://Assets/Enemy/Cube Man/ewalk2.png" id="3_tnnmr"]
+[ext_resource type="Texture2D" uid="uid://h84ax4nwy572" path="res://Assets/Enemy/Cube Man/ewalk3.png" id="4_taaqf"]
+[ext_resource type="Texture2D" uid="uid://oigm63ud6rcx" path="res://Assets/Enemy/Cube Man/ewalk1.png" id="5_qgkom"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eoaqt"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_taaqf")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_taaqf")
+}],
+"loop": true,
+"name": &"flying",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_qgkom")
+}],
+"loop": true,
+"name": &"hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_e6cbj")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_taaqf")
+}],
+"loop": true,
+"name": &"land",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"punch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tnnmr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_taaqf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_tnnmr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qgkom")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k56qn"]
+size = Vector2(163, 173)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qgkom"]
+size = Vector2(359, 61)
+
+[node name="Cubeman" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_544ap")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_eoaqt")
+animation = &"land"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3, -1)
+shape = SubResource("RectangleShape2D_k56qn")
+
+[node name="PunchTimer" type="Timer" parent="."]
+
+[node name="HitArea" type="Area2D" parent="."]
+
+[node name="HitArea" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_qgkom")

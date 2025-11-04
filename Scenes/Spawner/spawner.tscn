@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bn08l414ibna6"]
+
+[ext_resource type="Script" uid="uid://p0tqcs8aiocp" path="res://Scenes/Spawner/spawner.gd" id="1_kiceh"]
+[ext_resource type="PackedScene" uid="uid://bcvg5f6n0elr7" path="res://Scenes/Enemies/cubeman.tscn" id="2_rd5sa"]
+
+[node name="Spawner" type="Node2D"]
+script = ExtResource("1_kiceh")
+enemy_scene = ExtResource("2_rd5sa")
+
+[node name="Spawn 1" type="Marker2D" parent="."]
+position = Vector2(-1160, -150)
+
+[node name="Spawn 2" type="Marker2D" parent="."]
+position = Vector2(-1160, 150)
+
+[node name="Spawn 3" type="Marker2D" parent="."]
+position = Vector2(1160, -150)
+
+[node name="Spawn 4" type="Marker2D" parent="."]
+position = Vector2(1160, 150)

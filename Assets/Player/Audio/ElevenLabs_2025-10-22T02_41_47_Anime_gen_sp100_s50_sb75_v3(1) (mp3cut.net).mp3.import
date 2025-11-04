@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dl7ckjsjehib0"
+path="res://.godot/imported/ElevenLabs_2025-10-22T02_41_47_Anime_gen_sp100_s50_sb75_v3(1) (mp3cut.net).mp3-21630a173dc950cc49fbf50143308e29.mp3str"
+
+[deps]
+
+source_file="res://Assets/Player/Audio/ElevenLabs_2025-10-22T02_41_47_Anime_gen_sp100_s50_sb75_v3(1) (mp3cut.net).mp3"
+dest_files=["res://.godot/imported/ElevenLabs_2025-10-22T02_41_47_Anime_gen_sp100_s50_sb75_v3(1) (mp3cut.net).mp3-21630a173dc950cc49fbf50143308e29.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

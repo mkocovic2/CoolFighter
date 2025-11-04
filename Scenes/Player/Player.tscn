@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cxwb1lyni65af"]
+[gd_scene load_steps=12 format=3 uid="uid://cxwb1lyni65af"]
 
 [ext_resource type="Script" uid="uid://bf1khfrl877ee" path="res://Scenes/Player/player.gd" id="1_ft8w5"]
 [ext_resource type="Texture2D" uid="uid://b2e68c4vk4421" path="res://Assets/Player/p-idle.png" id="1_s0eop"]
@@ -6,6 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://bymg3uk7v4p2o" path="res://Assets/Player/p-kick.png" id="3_jmcll"]
 [ext_resource type="Texture2D" uid="uid://beevy6jvy81wj" path="res://Assets/Player/p-punch.png" id="4_4wape"]
 [ext_resource type="Texture2D" uid="uid://cc274uj4yr0ae" path="res://Assets/Player/p-punch2.png" id="5_t26db"]
+[ext_resource type="Texture2D" uid="uid://kbtsgoktumgp" path="res://Assets/Player/Walk/walk1.png" id="7_825xp"]
+[ext_resource type="Texture2D" uid="uid://way35ekh4iam" path="res://Assets/Player/Walk/walk2.png" id="8_ji083"]
+[ext_resource type="Texture2D" uid="uid://1qfqg011p3s2" path="res://Assets/Player/Walk/walk3.png" id="9_0kmp4"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ft8w5"]
 animations = [{
@@ -40,21 +43,50 @@ animations = [{
 "loop": true,
 "name": &"punch_right",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_825xp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ji083")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0kmp4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_ji083")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
 }]
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4wape"]
+size = Vector2(156, 176)
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 4
 script = ExtResource("1_ft8w5")
 attack_scene = ExtResource("2_4wape")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.705, 0.705)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
-position = Vector2(22, 0)
+position = Vector2(0, 4)
 sprite_frames = SubResource("SpriteFrames_ft8w5")
-animation = &"idle"
+animation = &"walk"
+frame_progress = 0.30316728
 
 [node name="AttackSpawnPoint" type="Marker2D" parent="."]
 position = Vector2(-175, -4)
 
 [node name="ComboTimer" type="Timer" parent="."]
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2, -1)
+shape = SubResource("RectangleShape2D_4wape")

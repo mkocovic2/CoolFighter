@@ -1,7 +1,274 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctqwu4ed5b7ug"]
+[gd_scene load_steps=12 format=3 uid="uid://ctqwu4ed5b7ug"]
 
 [ext_resource type="PackedScene" uid="uid://cxwb1lyni65af" path="res://Scenes/Player/Player.tscn" id="1_s0gyx"]
+[ext_resource type="AudioStream" uid="uid://criuxilbrl5f8" path="res://Assets/Audio/ingame.mp3" id="2_5sf7f"]
+[ext_resource type="Texture2D" uid="uid://wjf5235v2u3y" path="res://Assets/Background/city.png" id="3_tpkgp"]
+[ext_resource type="Texture2D" uid="uid://chblwihfr8rvy" path="res://Assets/Background/Sidewalk.png" id="3_u872a"]
+[ext_resource type="Texture2D" uid="uid://bxkk28jcyrb51" path="res://Assets/Background/water.png" id="3_w0lsm"]
+[ext_resource type="Texture2D" uid="uid://d1cwwpb68wpei" path="res://Assets/Background/walk.png" id="4_nk5xi"]
+[ext_resource type="Texture2D" uid="uid://ebofgd2p327x" path="res://Assets/Background/cityback.png" id="4_tpkgp"]
+[ext_resource type="Texture2D" uid="uid://dgkvf0kijwkdv" path="res://Assets/Background/wall.png" id="5_7i1ub"]
+[ext_resource type="PackedScene" uid="uid://bn08l414ibna6" path="res://Scenes/Spawner/spawner.tscn" id="9_d8okw"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_7i1ub"]
+distance = 11.0
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_w0lsm"]
+distance = -17.0
 
 [node name="Main" type="Node2D"]
+metadata/_edit_vertical_guides_ = [817.0, 2424.0]
+metadata/_edit_horizontal_guides_ = [-357.0]
 
 [node name="Player" parent="." instance=ExtResource("1_s0gyx")]
+position = Vector2(1.165, 675.43)
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_5sf7f")
+autoplay = true
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="Water" type="ParallaxLayer" parent="ParallaxBackground"]
+z_index = 1
+position = Vector2(-8, 140.61)
+motion_scale = Vector2(0.7, 0.7)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Water"]
+z_index = -1
+texture_filter = 1
+position = Vector2(408.1269, 169.00002)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_w0lsm")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Water"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_w0lsm")
+
+[node name="Water2" type="ParallaxLayer" parent="ParallaxBackground"]
+z_index = 1
+position = Vector2(-8, 140.61)
+motion_scale = Vector2(0.7, 0.7)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Water2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1226, 169)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_w0lsm")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Water2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_w0lsm")
+
+[node name="Buildings" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-7, 69)
+motion_scale = Vector2(0.7, 0.7)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Buildings"]
+z_index = -1
+texture_filter = 1
+position = Vector2(408.1269, 169.00002)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_tpkgp")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Buildings"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_tpkgp")
+
+[node name="Buildings2" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-7, 69)
+motion_scale = Vector2(0.7, 0.7)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Buildings2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1226, 169)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_tpkgp")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Buildings2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_tpkgp")
+
+[node name="Buildings3" type="ParallaxLayer" parent="ParallaxBackground"]
+z_index = -1
+position = Vector2(68, 31)
+motion_scale = Vector2(0.5, 0.5)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Buildings3"]
+z_index = -1
+texture_filter = 1
+position = Vector2(408.1269, 169.00002)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("4_tpkgp")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Buildings3"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("4_tpkgp")
+
+[node name="Buildings4" type="ParallaxLayer" parent="ParallaxBackground"]
+z_index = -1
+position = Vector2(68, 31)
+motion_scale = Vector2(0.5, 0.5)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="ParallaxBackground/Buildings4"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1226, 169)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("4_tpkgp")
+
+[node name="Sidewalk3" type="Sprite2D" parent="ParallaxBackground/Buildings4"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("4_tpkgp")
+
+[node name="Ground Parallax" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-8, 187)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer"]
+z_index = -1
+texture_filter = 1
+position = Vector2(408.1269, 169.00002)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_u872a")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_u872a")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-8, 187)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1226, 169)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_u872a")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer2"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 168.97502)
+scale = Vector2(0.4716478, 0.57325006)
+texture = ExtResource("3_u872a")
+
+[node name="ParallaxLayer3" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-8, 533)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer3"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1225.7585, 308.5)
+scale = Vector2(0.47137952, 1.0550001)
+texture = ExtResource("4_nk5xi")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer3"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 382.00003)
+scale = Vector2(0.4716478, 1.3600001)
+texture = ExtResource("4_nk5xi")
+
+[node name="ParallaxLayer4" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-18, 531)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer4"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1229.2585, 393.51248)
+scale = Vector2(0.4752684, 1.321625)
+texture = ExtResource("4_nk5xi")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer4"]
+z_index = -1
+texture_filter = 1
+position = Vector2(441, 384.00006)
+scale = Vector2(0.4716478, 1.3600001)
+texture = ExtResource("4_nk5xi")
+
+[node name="ParallaxLayer5" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-10, 1185)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer5"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1227.7585, 384.99994)
+scale = Vector2(0.47360167, 1.3566667)
+texture = ExtResource("5_7i1ub")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer5"]
+z_index = -1
+texture_filter = 1
+position = Vector2(-409.51697, 382.00003)
+scale = Vector2(0.4716478, 1.3600001)
+texture = ExtResource("5_7i1ub")
+
+[node name="ParallaxLayer6" type="ParallaxLayer" parent="Ground Parallax"]
+position = Vector2(-20, 1183)
+motion_mirroring = Vector2(1635.565, 0)
+
+[node name="Sidewalk2" type="Sprite2D" parent="Ground Parallax/ParallaxLayer6"]
+z_index = -1
+texture_filter = 1
+position = Vector2(1232.7585, 370.24377)
+scale = Vector2(0.4724906, 1.3141458)
+texture = ExtResource("5_7i1ub")
+
+[node name="Sidewalk3" type="Sprite2D" parent="Ground Parallax/ParallaxLayer6"]
+z_index = -1
+texture_filter = 1
+position = Vector2(441, 384.00006)
+scale = Vector2(0.4716478, 1.3600001)
+texture = ExtResource("5_7i1ub")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 28
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(164, 1169)
+shape = SubResource("WorldBoundaryShape2D_7i1ub")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 358)
+rotation = -3.1415925
+shape = SubResource("WorldBoundaryShape2D_w0lsm")
+
+[node name="Spawner" parent="." instance=ExtResource("9_d8okw")]
+position = Vector2(0, 711)
