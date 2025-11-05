@@ -272,3 +272,4 @@ shape = SubResource("WorldBoundaryShape2D_w0lsm")
 
 [node name="Spawner" parent="." instance=ExtResource("9_d8okw")]
 position = Vector2(0, 711)
+max_enemies = 12

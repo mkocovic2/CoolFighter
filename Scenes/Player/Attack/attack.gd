@@ -39,7 +39,6 @@ func _physics_process(delta):
 		queue_free()
 
 func _on_body_entered(body):
-	# Don't hit the same enemy twice
 	if body in hit_enemies:
 		return
 	
@@ -53,10 +52,22 @@ func _on_body_entered(body):
 		var send_flying = attack_type in ["kick", "shove", "explosion"]
 		
 		body.get_hit(damage, global_position, knockback_force, send_flying)
+		
+		# Remove the enemy from hit_enemies after a short delay
+		# This allows combo hits but prevents multiple hits from the same attack
+		await get_tree().create_timer(0.1).timeout
+		if body in hit_enemies:
+			hit_enemies.erase(body)
+			
 	# Fallback for old enemies with take_damage
 	elif body.has_method("take_damage"):
 		hit_enemies.append(body) 
 		body.take_damage(10)
+		
+		# Remove the enemy from hit_enemies after a short delay
+		await get_tree().create_timer(0.1).timeout
+		if body in hit_enemies:
+			hit_enemies.erase(body)
 
 func _get_attack_type() -> String:
 	var type = projectile_type.to_lower()
