@@ -112,7 +112,7 @@ func _handle_walking(delta):
 			attack_spawn_point.position.x = -abs(attack_spawn_point.position.x)
 	
 	if distance < punch_range:
-		change_state(State.PUNCH_WINDUP)  # Changed to windup state
+		change_state(State.PUNCH_WINDUP)
 	else:
 		velocity = direction * move_speed
 

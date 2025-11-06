@@ -5,28 +5,50 @@ extends CharacterBody2D
 @onready var attack_spawn_point = $AttackSpawnPoint
 @onready var collision_shape = $CollisionShape2D
 
+# Movement settings
 @export var speed: float = 200.0
+
+# Combat settings
 @export var combo_window: float = 1.0
 @export var attack_scene: PackedScene
 @export var attack_speed: float = 300.0
 @export var attack_distance: float = 100.0
 @export var health: int = 100
 
+# Dash settings
+@export var dash_speed: float = 600.0
+@export var dash_duration: float = 0.2
+@export var dash_cooldown: float = 1.0
+
+# Dash state
+var is_dashing = false
+var dash_direction = Vector2.ZERO
+var dash_timer: Timer
+var dash_cooldown_timer: Timer
+var can_dash = true
+
+# Animation state
 var current_animation: String = ""
+
+# Combo tracking
 var combo_count = 0
+var combo_sequence = []  # Tracks sequence of attacks for special moves
+
+# Attack state
 var is_attacking = false
 var attack_queued = false
-var spawn_point_offset: float = 0.0
+var queued_attack_type = ""  # Which button was queued (z or x)
+var spawn_point_offset: float = 0.0  # Distance from player to spawn attacks
 
-# Hit state variables
+# Hit state
 var is_hit = false
 var is_flying = false
 var is_grounded_from_hit = false
 var hit_velocity = Vector2.ZERO
 var gravity = 980.0
-var ground_y = 0.0
+var ground_y = 0.0  # Y position of ground for landing
 
-# Invulnerability variables
+# Invulnerability state
 var is_invulnerable = false
 var invulnerability_timer: Timer
 var blink_timer: Timer
@@ -36,7 +58,7 @@ func _ready():
 	combo_timer.one_shot = true
 	combo_timer.timeout.connect(_on_combo_timeout)
 	
-	# Store initial position and spawn point offset
+	# Store initial position, spawn point offset
 	ground_y = global_position.y
 	if attack_spawn_point:
 		spawn_point_offset = attack_spawn_point.position.x
@@ -52,6 +74,17 @@ func _ready():
 	blink_timer.wait_time = 0.1 
 	add_child(blink_timer)
 	blink_timer.timeout.connect(_on_blink_timeout)
+	
+	# Create dash timer, cooldown timer
+	dash_timer = Timer.new()
+	dash_timer.one_shot = true
+	add_child(dash_timer)
+	dash_timer.timeout.connect(_on_dash_timeout)
+	
+	dash_cooldown_timer = Timer.new()
+	dash_cooldown_timer.one_shot = true
+	add_child(dash_cooldown_timer)
+	dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timeout)
 
 func _physics_process(delta):
 	# Handle hit states
@@ -71,12 +104,31 @@ func _physics_process(delta):
 		move_and_slide()
 		return
 	
-	# Normal gameplay
-	if Input.is_action_just_pressed("ui_accept"):
+	# Handle dash
+	if is_dashing:
+		velocity = dash_direction * dash_speed
+		move_and_slide()
+		return
+	
+	# Check for dash input
+	if (Input.is_key_pressed(KEY_C)) and can_dash and not is_attacking:
+		_start_dash()
+		return
+	
+	if Input.is_action_just_pressed("ui_text_backspace") or Input.is_key_pressed(KEY_Z):
 		if is_attacking:
 			attack_queued = true
+			queued_attack_type = "z"
 		else:
-			_perform_attack()
+			_perform_attack("z")
+		return
+	
+	if Input.is_key_pressed(KEY_X):
+		if is_attacking:
+			attack_queued = true
+			queued_attack_type = "x"
+		else:
+			_perform_attack("x")
 		return
 	
 	if is_attacking:
@@ -92,8 +144,46 @@ func _physics_process(delta):
 	move_and_slide()
 	update_appearance()
 
+func _start_dash():
+	# Get dash direction from input or current facing direction
+	var input_vector = Vector2.ZERO
+	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
+	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+	
+	if input_vector.length() > 0:
+		dash_direction = input_vector.normalized()
+	else:
+		# Dash in the direction sprite is facing
+		dash_direction = Vector2.RIGHT if animated_sprite.flip_h else Vector2.LEFT
+	
+	is_dashing = true
+	can_dash = false
+	
+	# Brief invulnerability during dash
+	_start_invulnerability(dash_duration)
+	
+	# Play dash animation if available, otherwise use walk
+	if animated_sprite.sprite_frames.has_animation("dash"):
+		animated_sprite.play("dash")
+	else:
+		animated_sprite.play("walk")
+	
+	# Start dash timer, cooldown timer
+	dash_timer.wait_time = dash_duration
+	dash_timer.start()
+	
+	dash_cooldown_timer.wait_time = dash_cooldown
+	dash_cooldown_timer.start()
+
+func _on_dash_timeout():
+	is_dashing = false
+	velocity = Vector2.ZERO
+
+func _on_dash_cooldown_timeout():
+	can_dash = true
+
 func _handle_flying(delta):
-	# Apply gravity and horizontal velocity
+	# Apply gravity, horizontal velocity
 	hit_velocity.y += gravity * delta
 	velocity = hit_velocity
 	move_and_slide()
@@ -117,20 +207,42 @@ func _get_up():
 	current_animation = "idle"
 	animated_sprite.play("idle")
 	
-	# Add 2 seconds of invulnerability after getting up
+	# Add invulnerability after getting up
 	_start_invulnerability(2.0)
 
-func _perform_attack():
+func _perform_attack(attack_type: String):
 	if is_attacking or is_hit:
 		return
 	
 	combo_count += 1
+	combo_sequence.append(attack_type)
+	
+	# Keep only last 3 attacks in sequence
+	if combo_sequence.size() > 3:
+		combo_sequence.pop_front()
 	
 	if combo_count > 3:
 		combo_count = 1
+		combo_sequence = [attack_type]
 	
 	combo_timer.start()
 	
+	# Check for special combos
+	if combo_sequence.size() == 3:
+		# Z, Z, X = fire
+		if combo_sequence[0] == "z" and combo_sequence[1] == "z" and combo_sequence[2] == "x":
+			_spawn_attack("fire")
+			combo_count = 0
+			combo_sequence.clear()
+			return
+		# X, X, Z = shove
+		elif combo_sequence[0] == "x" and combo_sequence[1] == "x" and combo_sequence[2] == "z":
+			_spawn_attack("shove")
+			combo_count = 0
+			combo_sequence.clear()
+			return
+	
+	# Normal combo attacks
 	match combo_count:
 		1:
 			_spawn_attack("punch")
@@ -138,6 +250,7 @@ func _perform_attack():
 			_spawn_attack("punch_right")
 		3:
 			_spawn_attack("kick")
+			combo_sequence.clear()
 
 func _on_attack_finished():
 	is_attacking = false
@@ -147,7 +260,8 @@ func _on_attack_finished():
 	
 	if attack_queued:
 		attack_queued = false
-		_perform_attack()
+		_perform_attack(queued_attack_type)
+		queued_attack_type = ""
 
 func _spawn_attack(attack_type: String):
 	is_attacking = true
@@ -182,6 +296,7 @@ func _spawn_attack(attack_type: String):
 func _on_combo_timeout():
 	if not is_attacking:
 		combo_count = 0
+		combo_sequence.clear()
 
 func update_appearance():
 	if not animated_sprite:
@@ -204,7 +319,7 @@ func update_appearance():
 		animated_sprite.animation = desired_animation
 		animated_sprite.play()
 	
-	# Flip sprite and attack spawn point based on movement direction
+	# Flip sprite, attack spawn point based on movement direction
 	if velocity.x < 0:
 		animated_sprite.flip_h = false
 		if attack_spawn_point:
@@ -273,9 +388,10 @@ func get_hit(damage: int, attacker_position: Vector2, knockback_force: float = 3
 	# Play hit animation
 	animated_sprite.play("hit")
 	
-	# Cancel any ongoing attack
+	# Cancel any ongoing attack, dash
 	is_attacking = false
 	attack_queued = false
+	is_dashing = false
 
 @onready var scene_audio = $"../AudioStreamPlayer2D"
 
@@ -296,7 +412,7 @@ func _die():
 
 	await get_tree().create_timer(2.0, true).timeout
 	
-	# Reset time and audio
+	# Reset time, audio
 	Engine.time_scale = 1.0
 	if scene_audio:
 		scene_audio.pitch_scale = 1.0
